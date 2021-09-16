@@ -1,4 +1,4 @@
-﻿TP1 - Laboratório de Redes e Sistemas Operacionais
+# TP1 - Laboratório de Redes e Sistemas Operacionais
  
  PUC-Minas
  
