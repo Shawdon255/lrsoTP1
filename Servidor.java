@@ -75,21 +75,57 @@ public class Servidor {
                 System.out.println("Enviado menu para o usuário");
                 servidor.enviaMensagem(this.cliente, this.enviaMenu());
                 int opcao;
+                boolean desconectar = false;
 
-                while (s.hasNextLine()){
+                while (s.hasNextLine() && !desconectar){
                     System.out.println("Enviando mensagem para o usuário: " + cliente.getInetAddress().getHostAddress());
                     opcao = s.nextInt();
-                    servidor.enviaMensagem(this.cliente, controlador.selecionaOpcao(opcao, 0, "")+"Digite uma opção: ");
+                    servidor.enviaMensagem(this.cliente, controlador.selecionaOpcao(opcao, 0, ""));
                     
                     switch(opcao){
+                        case 1:
+                            servidor.enviaMensagem(this.cliente, "Voltar ao Menu? (y/n)");
+                            String volta = s.next();
+                            while(volta.charAt(0) != 'y'){
+                                servidor.enviaMensagem(this.cliente, "Voltar ao Menu? (y/n)");
+                                volta = s.next();
+                            }
+                            volta.toLowerCase();
+                            if(volta.charAt(0) == 'y'){
+                                System.out.println("Enviado menu para o usuário");
+                                servidor.enviaMensagem(this.cliente, this.enviaMenu());
+                                break; 
+                            }        
                         case 2:                     
-                            servidor.enviaMensagem(this.cliente, "Digite o ID da passagem: ");
+                            servidor.enviaMensagem(this.cliente, "Digite o ID da passagem que deseja reservar: ");
                             int idPassagem = s.nextInt();
+                            while(idPassagem > 6){
+                                servidor.enviaMensagem(this.cliente, "ID Inválido, digíte novamente: ");
+                                idPassagem = s.nextInt();
+                            }
+                            servidor.enviaMensagem(this.cliente, "Digite o Nome do comprador: ");
+                            System.out.println(s.nextLine());
+                            String nomeCliente = s.nextLine();
+                            System.out.println("Cliente para reservar: "+nomeCliente);
+                            controlador.selecionaOpcao(2, idPassagem, nomeCliente);
+                            servidor.enviaMensagem(this.cliente, "Reserva efetuada obrigado "+cliente.getInetAddress().getHostAddress());
+                            servidor.enviaMensagem(this.cliente, this.enviaMenu());
+                            break;
+                        case 3:
+                            servidor.enviaMensagem(this.cliente, "Digite o ID da passagem que deseja cancelar: ");
+                            idPassagem = s.nextInt();                     
                             servidor.enviaMensagem(this.cliente, "Digite o Nome do comprador: ");
                             s.nextLine();
-                            String nomeCliente = s.nextLine();
-                            System.out.println(nomeCliente);
-                            controlador.selecionaOpcao(2, idPassagem, nomeCliente);
+                            nomeCliente = s.nextLine();
+                            System.out.println("Cliente para cancelar: "+nomeCliente);
+                            controlador.selecionaOpcao(3, idPassagem, nomeCliente);
+                            servidor.enviaMensagem(this.cliente, "Cancelamento efetuado obrigado "+cliente.getInetAddress().getHostAddress());
+                            servidor.enviaMensagem(this.cliente, this.enviaMenu());
+                            break;
+                        case 99:
+                            servidor.enviaMensagem(this.cliente, "desconectar");
+                            System.out.println("Cliente desconectado: "+cliente.getInetAddress().getHostAddress());
+                            desconectar = true;
                             break;
                         default:
                             System.out.println("");

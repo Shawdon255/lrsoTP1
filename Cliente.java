@@ -30,8 +30,13 @@ public class Cliente {
         // lê msgs do teclado e manda pro servidor 
         Scanner teclado = new Scanner(System.in);
         PrintStream saida = new PrintStream(cliente.getOutputStream());
+        String palavra;
         while (teclado.hasNextLine()) {
-            saida.println(teclado.nextLine());
+            palavra = teclado.nextLine();
+            saida.println(palavra);
+            if(palavra.compareTo("99") == 0){
+                break;
+            }
         }
         saida.close();
         teclado.close();
@@ -47,10 +52,17 @@ class Recebedor implements Runnable {
     }
     
     public void run() {
-        // recebe msgs do servidor e imprime na tela
+        boolean desconectar = false;
+        String palavra;
+
+        // recebe msgs do servidor e imprime na tela     
         Scanner s = new Scanner(this.servidor);
-        while (s.hasNextLine()) {
-            System.out.println(s.nextLine());
+        while (s.hasNextLine() && !desconectar) {
+            palavra = s.nextLine();
+            System.out.println(palavra);
+            if(palavra.compareTo("desconectar") == 0){
+                desconectar = true;
+            }
         }
     }   
 }

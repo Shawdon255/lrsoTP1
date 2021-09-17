@@ -5,13 +5,13 @@ public class Menu {
     
     public Menu(){
         menu =
-        "##--Reserva de Passagens--##\n\n"  +
-        "|-----------------------------|\n" + 
-        "| Opção 1 - Listar Passagens  |\n" +
-        "| Opção 2 - Reservar Passagem |\n" +
-        "| Opção 3 - Produtos          |\n" +
-        "| Opção 4 - Sair              |\n" +
-        "|-----------------------------|\n" +
+        "\n##--Reserva de Passagens--##\n\n"  +
+        "|------------------------------|\n" + 
+        "| Opção 1  - Listar Passagens  |\n" +
+        "| Opção 2  - Reservar Passagem |\n" +
+        "| Opção 3  - Cancelar Reserva  |\n" +
+        "| Opção 99 - Sair              |\n" +
+        "|------------------------------|\n" +
         "Digite uma opção:";
     }
 
@@ -21,10 +21,6 @@ public class Menu {
 
     public String retornaListaPassagem(){
         return "##--Lista de Passagens--##\n\n";
-    }
-
-    public static void main(String[] args){
-        Menu teste = new Menu();
     }
 
 } // final Menu

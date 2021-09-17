@@ -34,4 +34,8 @@ public class Passagem {
         p.destino = this.destino;
         p.data = this.data;
     }
+
+    public String toString(){
+        return ("Empresa: "+this.empresa +"\tOrigem: "+this.origem +"\tDestino: "+this.destino +"\tData: "+this.data +"\tPreço: "+this.preco);
+    }
 }
