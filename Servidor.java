@@ -19,8 +19,8 @@ public class Servidor {
         
         public Servidor (int porta) {
             this.porta = porta;
-            this.clientes = new ArrayList<PrintStream>();
             this.controlador = new Controlador();
+            controlador.criaListaPassagem();
         }
 
         public void executa () throws IOException {
@@ -32,10 +32,10 @@ public class Servidor {
         
                 System.out.println("Nova conexão com o cliente " + cliente.getInetAddress().getHostAddress());
                 // adiciona saida do cliente à lista
-                PrintStream ps = new PrintStream(cliente.getOutputStream());
-                this.clientes.add(ps);
+                //PrintStream ps = new PrintStream(cliente.getOutputStream());
+                //this.clientes.add(ps);
                 // cria tratador de cliente numa nova thread
-                TrataCliente tc = new TrataCliente(cliente.getInputStream(), this);
+                TrataCliente tc = new TrataCliente(cliente, this, controlador);
                 new Thread(tc).start();
             }
         }
@@ -47,30 +47,59 @@ public class Servidor {
             }
         }
 
-        public void enviaMenu(){
-            for (PrintStream cliente : this.clientes) {
-                cliente.println(controlador.mostrar());
-            }
+        public void enviaMensagem(Socket cliente, String msg) throws IOException{
+            PrintStream ps = new PrintStream(cliente.getOutputStream());
+            ps.println(msg);
         }
     }
   
     class TrataCliente implements Runnable {
-        private InputStream cliente;
+        private Socket cliente;
         private Servidor servidor;
+        private Controlador controlador;
 
-        public TrataCliente(InputStream cliente, Servidor servidor) {
+        public TrataCliente(Socket cliente, Servidor servidor, Controlador controlador) {
             this.cliente = cliente;
             this.servidor = servidor;
+            this.controlador = controlador;
+        }
+
+        public String enviaMenu(){
+            return controlador.mostrar();
         }
         
         public void run() { 
-            // quando chegar uma msg, distribui pra todos
-            Scanner s = new Scanner(this.cliente);
-            while (s.hasNextLine()) {
+            // quando chegar uma msg, distribui
+            try{
+                Scanner s = new Scanner(this.cliente.getInputStream());
                 System.out.println("Enviado menu para o usuário");
-                servidor.enviaMenu();
-                //servidor.distribuiMensagem(s.nextLine());
-            }
-            s.close();
+                servidor.enviaMensagem(this.cliente, this.enviaMenu());
+                int opcao;
+
+                while (s.hasNextLine()){
+                    System.out.println("Enviando mensagem para o usuário: " + cliente.getInetAddress().getHostAddress());
+                    opcao = s.nextInt();
+                    servidor.enviaMensagem(this.cliente, controlador.selecionaOpcao(opcao, 0, "")+"Digite uma opção: ");
+                    
+                    switch(opcao){
+                        case 2:                     
+                            servidor.enviaMensagem(this.cliente, "Digite o ID da passagem: ");
+                            int idPassagem = s.nextInt();
+                            servidor.enviaMensagem(this.cliente, "Digite o Nome do comprador: ");
+                            s.nextLine();
+                            String nomeCliente = s.nextLine();
+                            System.out.println(nomeCliente);
+                            controlador.selecionaOpcao(2, idPassagem, nomeCliente);
+                            break;
+                        default:
+                            System.out.println("");
+                            break;
+                    }
+                }
+                s.close();
+            
+        } catch(IOException ioe){
+                System.out.println("Deu RUIM");
         }
     }
+} // final TrataCliente
