@@ -1,28 +1,24 @@
-import java.util.Scanner;
-
 public class Menu {
     private String menu;
     
     public Menu(){
         menu =
-        "##--Reserva de Passagens--##\n\n"  +
-        "|-----------------------------|\n" + 
-        "| Opção 1 - Reservar Passagem |\n" +
-        "| Opção 2 - Clientes          |\n" +
-        "| Opção 3 - Produtos          |\n" +
-        "| Opção 4 - Sair              |\n" +
-        "|-----------------------------|\n" +
+        "\n##--Reserva de Passagens--##\n\n"  +
+        "|------------------------------|\n" + 
+        "| Opção 1  - Listar Passagens  |\n" +
+        "| Opção 2  - Reservar Passagem |\n" +
+        "| Opção 3  - Cancelar Reserva  |\n" +
+        "| Opção 99 - Sair              |\n" +
+        "|------------------------------|\n" +
         "Digite uma opção:";
     }
-
+ 
     public String retornaMenu(){
         return menu;
     }
-
-    public static void main(String[] args){
-        Menu teste = new Menu();
+ 
+    public String retornaListaPassagem(){
+        return "##--Lista de Passagens--##\n\n";
     }
-
+ 
 } // final Menu
-
-

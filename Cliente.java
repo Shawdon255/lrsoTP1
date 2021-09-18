@@ -4,21 +4,21 @@ import java.io.PrintStream;
 import java.util.Scanner;
 import java.net.UnknownHostException;
 import java.net.Socket;
-
+ 
 public class Cliente {
     public static void main(String[]args) throws UnknownHostException, IOException {
     // dispara cliente
         new Cliente("127.0.0.1", 12345).executa();
     }
-
+ 
     private String host;
     private int porta;
-
+ 
     public Cliente (String host, int porta) {
         this.host = host;
         this.porta = porta;
     }
-
+ 
     public void executa() throws UnknownHostException, IOException {
         Socket cliente = new Socket(this.host, this.porta);
         System.out.println("Conexão estabelecida.");
@@ -30,27 +30,41 @@ public class Cliente {
         // lê msgs do teclado e manda pro servidor 
         Scanner teclado = new Scanner(System.in);
         PrintStream saida = new PrintStream(cliente.getOutputStream());
+        String palavra;
         while (teclado.hasNextLine()) {
-            saida.println(teclado.nextLine());
+            palavra = teclado.nextLine();
+            saida.println(palavra);
+            // caso receba a opcao 99 cliente encerra conexão
+            if(palavra.compareTo("99") == 0){
+                break;
+            }
         }
         saida.close();
         teclado.close();
         cliente.close();
     }
 }
-
+ 
 class Recebedor implements Runnable {
     private InputStream servidor;
-
+ 
     public Recebedor(InputStream servidor) {
         this.servidor = servidor;
     }
     
     public void run() {
-        // recebe msgs do servidor e imprime na tela
+        boolean desconectar = false;
+        String palavra;
+ 
+        // recebe msgs do servidor e imprime na tela     
         Scanner s = new Scanner(this.servidor);
-        while (s.hasNextLine()) {
-            System.out.println(s.nextLine());
+        while (s.hasNextLine() && !desconectar) {
+            palavra = s.nextLine();
+            System.out.println(palavra);
+            // caso receber desconectar do servidor finaliza o while
+            if(palavra.compareTo("desconectar") == 0){
+                desconectar = true;
+            }
         }
     }   
 }
