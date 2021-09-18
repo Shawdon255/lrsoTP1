@@ -66,5 +66,6 @@ class Recebedor implements Runnable {
                 desconectar = true;
             }
         }
+        s.close();
     }   
 }
